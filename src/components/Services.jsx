@@ -1,31 +1,60 @@
-const services = [
-  {
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80',
-    title: 'Forklift Training',
-    desc: 'Comprehensive operator training covering safe load handling, stability, pre-operation checks, and industrial safety standards.',
-    highlights: ['Theory & Practical Sessions', 'Safety Certification', 'Hands-on Operation']
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80',
-    title: 'Excavator Training',
-    desc: 'Professional excavator operation training including site safety, machine controls, digging techniques, and ground conditions.',
-    highlights: ['Site Safety Protocols', 'Machine Control Mastery', 'Practical Assessment']
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1590496793929-36417d3117de?w=600&q=80',
-    title: 'Mobile Crane Training',
-    desc: 'Expert training for mobile crane operators covering load charts, rigging, slinging, and safe lifting operations.',
-    highlights: ['Load Chart Reading', 'Rigging & Slinging', 'Lift Planning']
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
-    title: 'Crane Rental',
-    desc: 'We provide well-maintained cranes for rent for construction, industrial, and infrastructure projects across the region.',
-    highlights: ['Well-maintained Fleet', 'Experienced Operators', 'Flexible Rental Terms']
-  }
-]
+import { useEffect, useState } from 'react'
+
+const API_BASE = import.meta.env.VITE_API_BASE || ''
 
 export default function Services() {
+  const [services, setServices] = useState([])
+
+  useEffect(() => {
+    document.title = 'MGM Services — Forklift, Excavator, Mobile Crane Training'
+    const description = 'Explore MGM services including forklift training, excavator training, mobile crane training and crane rental in Neyveli.'
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', description)
+  }, [])
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/services`)
+        if (!resp.ok) throw new Error('Failed to load services')
+        const data = await resp.json()
+        if (data.services) setServices(data.services)
+      } catch {
+        setServices([
+          {
+            key: 'forklift',
+            image: '/forklift-training.svg',
+            title: 'Forklift Training',
+            desc: 'Comprehensive operator training covering safe load handling, stability, pre-operation checks, and industrial safety standards.',
+            highlights: ['Theory & Practical Sessions', 'Safety Certification', 'Hands-on Operation']
+          },
+          {
+            key: 'excavator',
+            image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80',
+            title: 'Excavator Training',
+            desc: 'Professional excavator operation training including site safety, machine controls, digging techniques, and ground conditions.',
+            highlights: ['Site Safety Protocols', 'Machine Control Mastery', 'Practical Assessment']
+          },
+          {
+            key: 'mobileCrane',
+            image: 'https://images.unsplash.com/photo-1590496793929-36417d3117de?w=600&q=80',
+            title: 'Mobile Crane Training',
+            desc: 'Expert training for mobile crane operators covering load charts, rigging, slinging, and safe lifting operations.',
+            highlights: ['Load Chart Reading', 'Rigging & Slinging', 'Lift Planning']
+          },
+          {
+            key: 'craneRental',
+            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+            title: 'Crane Rental',
+            desc: 'We provide well-maintained cranes for rent for construction, industrial, and infrastructure projects across the region.',
+            highlights: ['Well-maintained Fleet', 'Experienced Operators', 'Flexible Rental Terms']
+          }
+        ])
+      }
+    }
+    loadServices()
+  }, [])
+
   return (
     <section id="services" style={{ padding: '5rem 2rem', background: '#f8f9fa' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>

@@ -1,22 +1,53 @@
 import { ChevronDown } from 'lucide-react'
-
-const heroImages = [
-  'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80',
-  'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&q=80',
-  'https://images.unsplash.com/photo-1590496793929-36417d3117de?w=1200&q=80',
-]
-
 import { useState, useEffect } from 'react'
+
+const API_BASE = import.meta.env.VITE_API_BASE || ''
+const defaultHeroImages = [
+  '/hero/Hero1.svg',
+  '/hero/Hero2.svg',
+  '/hero/Hero3.svg',
+  '/hero/Hero4.svg',
+  '/hero/Hero5.svg',
+  '/hero/Hero6.svg',
+  '/hero/Hero7.svg',
+  '/hero/Hero8.svg',
+  '/hero/Hero9.svg',
+  '/hero/Hero10.svg',
+]
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
+  const [heroImages, setHeroImages] = useState(defaultHeroImages)
+
+  useEffect(() => {
+    document.title = 'MGM Training & Crane Rental — Neyveli'
+    const description = 'Marudhamuthu Charitable Trust provides certified forklift, excavator and mobile crane training with crane rental services in Neyveli.'
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', description)
+  }, [])
+
+  useEffect(() => {
+    async function fetchHeroImages() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/hero-images`)
+        if (!resp.ok) return
+        const data = await resp.json()
+        if (Array.isArray(data.images) && data.images.length > 0) {
+          setHeroImages(data.images)
+        }
+      } catch {
+        // ignore network errors and keep defaults
+      }
+    }
+    fetchHeroImages()
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent(prev => (prev + 1) % heroImages.length)
     }, 4000)
     return () => clearInterval(timer)
-  }, [])
+  }, [heroImages])
 
   return (
     <section style={{
@@ -35,10 +66,10 @@ export default function Hero() {
           zIndex: 0
         }} />
       ))}
-      {/* Dark overlay */}
+      {/* Light overlay so the image stays visible */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(135deg, rgba(15,15,40,0.88) 0%, rgba(10,30,80,0.80) 100%)',
+        background: 'linear-gradient(135deg, rgba(15,15,40,0.18) 0%, rgba(10,30,80,0.12) 100%)',
         zIndex: 1
       }} />
 
